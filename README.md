@@ -79,10 +79,28 @@ All decisions are logged to `choices.ndjson` in NDJSON format, including:
 - Chosen option
 - Selection method (AI or random fallback)
 
-## Disclaimer
+## Automated Daily Runs (GitHub Actions)
 
-This tool interacts with NationStates' API. Use responsibly and in accordance with their terms of service. The AI makes decisions based on the prompt, which prioritizes economic stability, civil rights, and political freedom.
+The repository includes a GitHub Actions workflow that can automatically check for and respond to NationStates issues once per day.
 
-## License
+### Setup
 
-MIT License
+1. Go to your repository settings on GitHub
+2. Navigate to "Secrets and variables" > "Actions"
+3. Add the following repository secrets:
+   - `NATION`: Your NationStates nation name
+   - `PASSWORD`: Your NationStates password
+   - `USER_AGENT`: A descriptive user agent (e.g., "NationStates-AI-Simulator/1.0 (your-email@example.com)")
+
+### How it works
+
+- The workflow runs daily at 12:00 UTC (adjust the cron schedule in `.github/workflows/daily-run.yml` if needed)
+- It sets up Ollama with the Llama 3.2 3B model
+- Runs the script in single-run mode to check for and answer any pending issues
+- Logs decisions to `choices.ndjson` (though this won't persist between runs in the workflow environment)
+
+### Manual Trigger
+
+You can also trigger the workflow manually from the Actions tab on GitHub.
+
+**Note**: This workflow runs on GitHub's servers and requires storing your credentials as secrets.

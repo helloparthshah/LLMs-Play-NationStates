@@ -1,0 +1,49 @@
+name: Daily NationStates Check
+
+on:
+  schedule:
+    # Run daily at 12:00 UTC (adjust timezone as needed)
+    - cron: '0 12 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Install Ollama
+      run: |
+        curl -fsSL https://ollama.com/install.sh | sh
+
+    - name: Start Ollama service
+      run: |
+        ollama serve &
+        sleep 10  # Wait for Ollama to start
+
+    - name: Pull Llama model
+      run: |
+        ollama pull llama3.2:3b
+
+    - name: Run NationStates script
+      env:
+        NATION: ${{ secrets.NATION }}
+        PASSWORD: ${{ secrets.PASSWORD }}
+        USER_AGENT: ${{ secrets.USER_AGENT }}
+        SLEEP_BETWEEN_REQUESTS: 10
+        TEST_MODE: false
+        SINGLE_RUN: true
+      run: |
+        python main.py

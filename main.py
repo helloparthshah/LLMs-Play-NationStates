@@ -24,6 +24,7 @@ NATION = os.getenv("NATION")
 PASSWORD = os.getenv("PASSWORD")
 SLEEP_BETWEEN_REQUESTS = int(os.getenv("SLEEP_BETWEEN_REQUESTS", 10))
 TEST_MODE = os.getenv("TEST_MODE", "false").lower() == "true"  # Set to true for testing without submitting
+SINGLE_RUN = os.getenv("SINGLE_RUN", "false").lower() == "true"  # Set to true to run once and exit
 # ---------------
 
 def ns_request(params, headers=None, data=None):
@@ -154,9 +155,14 @@ if __name__ == "__main__":
         print("Checking for new issues…")
         run_once()
         print("Test completed.")
+    elif SINGLE_RUN:
+        print("Running in SINGLE RUN MODE - will check and answer once.")
+        print("Checking for new issues…")
+        run_once()
+        print("Single run completed.")
     else:
         while True:
             print("Checking for new issues…")
             run_once()
             print("Sleeping before next check.")
-            time.sleep(3600)  # check every hour
+            time.sleep(86400)  # check every 24 hours
