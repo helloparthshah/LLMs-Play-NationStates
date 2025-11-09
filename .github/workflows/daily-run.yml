@@ -9,6 +9,8 @@ on:
 jobs:
   run-script:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Allow pushing changes back to the repository
 
     steps:
     - name: Checkout repository
